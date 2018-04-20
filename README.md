@@ -1,14 +1,20 @@
 # Matlab GUI testbed
 
-- Function
+- Description : Identify prameters of communication signals 
 
-Get prameters from communication signals 
+- Types of parameters : Modulation scheme/order, Bandwidth, Symbol rate, etc. 
+  
+- Available types of input signal : Analog AM, FM  /  Digital ASK, PSK, FSK, QAM  
 
-Types of parameters : Modulation scheme/order, Bandwidth, Symbol rate
+- Requirement : Matlab 2013a higher version
 
-- Available types of input signal
+- Input : *.diq file
 
-Analog : AM, FM / Digital : ASK, PSK, FSK, QAM
+- Output : None
+
+ 
+
+
 
 
 
