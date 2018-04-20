@@ -1,4 +1,4 @@
-# Matlab GUI testbed
+# Communication analysis tool
 
 - Description : Identify prameters of communication signals 
 
