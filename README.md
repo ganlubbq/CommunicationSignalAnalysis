@@ -1,4 +1,4 @@
-# Communication analysis tool
+# Communication signal analysis tool
 
 - Description : Identify prameters of communication signals 
 
