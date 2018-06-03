@@ -1,6 +1,5 @@
 function varargout = AMRtestbed(varargin)
 
-% Edit the above text to modify the response to help AMRtestbed
 % Last Modified by GUIDE v2.5 26-Jan-2018 09:30:43
 
 %% List of callback function
@@ -39,7 +38,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-% --- Executes just before AMRtestbed is made visible.
+%  Executes just before AMRtestbed is made visible.
 function handles = AMRtestbed_OpeningFcn(hObject, ~, handles, varargin)
 
 %% Set default parameters
@@ -50,7 +49,6 @@ handles.sam_period         = 1 / handles.sam_freq;
 handles.rF                 = 0.35;    % roll-off factor
 handles.FFTlength          = 2^13;    % 8192, The length of periodgram = FFT length, for Bandwidth
 handles.samplesPerSegment  = 2^14;
-% handles.SymboRateSamplesPerSegment = 65536; --> FFTlength, 15.06.22
 
 % handles.featureSNR_dB      = 10 :5: 30 ; %10:20; % --> 140106
 handles.SNR_dB             = 15;
@@ -96,26 +94,23 @@ handles.fadingType = 'Rayleigh';
 %% Remind that these parameter should be copy to reset callback
 
 % set parameter
-% markerSet={'+','o','*','.','x','s','d','^','v','>','<','p','h'};
-% colorSet={'','g','b','c','m','k','r','g','b','c','m','k','r','g','b'};
-handles.Lmod       = {'AM','FM','2ASK','2FSK', '4FSK', '8FSK','BPSK', 'QPSK',...
-                          '8PSK','QAM'};
+handles.Lmod       	       = {'AM', 'FM', '2ASK', '2FSK', '4FSK', '8FSK', 'BPSK', 'QPSK', '8PSK','QAM'};
 handles.numOfLienarModScheme   = {'QPSK','8PSK','32QAM'}; % except BPSK, 2ASK                         
 handles.lineSet      = {'.r','.g','.b','.c','.m','.k','.r','.g','.b','.c','.m','.k','.r','.g'};
-handles.markerSet      = {'o','+','*','.','s','d','^','v','>','p','h','<','o','+'};
+handles.markerSet    = {'o','+','*','.','s','d','^','v','>','p','h','<','o','+'};
 handles.Fset =  {'\sigma_{a}','|CC40|','|CC20|'};  % for KNN
                 
 handles.refModIdx       = 1 : length(handles.numOfLienarModScheme);
 handles.numOfFeature    = length(handles.Fset);
 
-set(handles.edit_rF,            'String',num2str(handles.rF) );
-set(handles.edit_samFreq,       'String',num2str(handles.sam_freq));
-set(handles.edit_dispSNR,       'String','40');
-set(handles.edit_viewStartIdx,  'String',num2str(handles.viewStartIdx));
-set(handles.edit_viewEndIdx,    'String',num2str(handles.viewEndIdx));
+set(handles.edit_rF, 'String',num2str(handles.rF) );
+set(handles.edit_samFreq, 'String',num2str(handles.sam_freq));
+set(handles.edit_dispSNR, 'String','40');
+set(handles.edit_viewStartIdx, 'String',num2str(handles.viewStartIdx));
+set(handles.edit_viewEndIdx, 'String',num2str(handles.viewEndIdx));
 set(handles.edit_freqResolution,'String',num2str(handles.freqResolution));
-set(handles.edit_dispSNR,       'String',handles.SNR_dB);
-set(handles.edit_xdB,           'String',num2str(handles.xdB));
+set(handles.edit_dispSNR, 'String',handles.SNR_dB);
+set(handles.edit_xdB, 'String',num2str(handles.xdB));
 set(handles.edit_samplesPerSegment,'String',num2str(handles.samplesPerSegment));
 set(handles.popupmenu_decimationFactor,'Value',nextpow2(handles.previousDecimationFactor)-4);
 set(handles.popupmenu_spectrumTrace,'Value',1);
@@ -164,6 +159,7 @@ set(handles.pushbutton_fusionCenter,     'Enable','off');
 set(handles.pushbutton_saveData,'Enable','off');
 set(handles.pushbutton_makeCHeader,'Enable','off');
 set(handles.pushbutton_demod,'Enable','off');
+
 %% Disable Default setting
 set(handles.popupmenu_decimationFactor,'Enable','off');
 
@@ -200,28 +196,27 @@ end
 
 function popupmenu_decimationFactor_Callback(hObject, eventdata, handles)
 
-contents                 = cellstr(get(hObject,'String'));
-currentDecimationFactor  = str2double( contents{get(hObject,'Value')} );
+contents = cellstr(get(hObject,'String'));
+currentDecimationFactor = str2double( contents{get(hObject,'Value')} );
 previousDecimationFactor = handles.previousDecimationFactor;
-rx_sig             = handles.rx_sig;
-FFTlength                = handles.FFTlength;
+rx_sig = handles.rx_sig;
+FFTlength = handles.FFTlength;
 
-power      = nextpow2(currentDecimationFactor);
+power = nextpow2(currentDecimationFactor);
 integerNum = currentDecimationFactor / previousDecimationFactor;
+
 %% update states
 if integerNum == 1      % None
-%     rx_sig = rx_sig;
 elseif integerNum > 1   % Downsampling
-%     rx_sig = decimate(basic_rx_sig,integerNum);
     rx_sig = downsample(rx_sig,integerNum);
     
 elseif integerNum < 1   % Upsampling
-%     rx_sig = interp(basic_rx_sig,1/integerNum);
     rx_sig = interp(rx_sig,1/integerNum);
 end
 
 sam_freq =  140e6/currentDecimationFactor;
 sigLen   =  length(rx_sig);
+
 %% update GUI states
 cla(handles.axes_monitoring,'reset');
 legend(handles.axes_monitoring,'off');
@@ -421,6 +416,7 @@ else
     [filename,filepath]=uigetfile({'*.*','All Files'},...
         'Select Data File 1');
 end
+
 %% read data
 if filename ~= 0
     set(handles.edit_filename,'String',filename);
@@ -433,13 +429,7 @@ if filename ~= 0
                 
                 [initial_uint32_Data, count] = fread( fileID, 'uint32=>uint32');
                 fclose(fileID);
-
-                % restrict the number of data samples
-%                 endNum = 2; % 20
-%                 sigLenLimitStart    = 1;            
-%                 sigLenLimitEnd      = floor(length( initial_uint32_Data ) / endNum);       
-%                 initial_uint32_Data = initial_uint32_Data(sigLenLimitStart:sigLenLimitEnd);
-                
+                                
                 sigLenLimitStart    = 1;            
                 sigLenLimitEnd      = length(initial_uint32_Data);       
                 initial_uint32_Data = initial_uint32_Data(sigLenLimitStart:sigLenLimitEnd);
@@ -463,10 +453,9 @@ if filename ~= 0
                 %           | IQ  : 01 |                     |                    |
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                
                 
-               %% Matlab style coding
+                %% Matlab style coding
                 % Search TOA
                 headerBits = bitand(uint32_Data,hex2dec('c0000000'));
-%                 
                 logicIdx = headerBits == hex2dec('c0000000');
                 number = 1 : sigLen;
                 TOAIdx = number(logicIdx);
@@ -615,13 +604,6 @@ if filename ~= 0
     handles.isDehoppingSig = isDehoppingSig;
     guidata(hObject, handles);
     
-%     rx_sig = rx_sig(1:85000);
-%     startIdx = strfind(filename,'.diq');
-%     filename(startIdx:end) = [];
-%     filename = [filename,'.mat'];
-%     save(filename,'rx_sig');
-%     
-%     makecheader_141118(filename);
     %% Auto mode
     if handles.opMode
           handles = pushbutton_addNoise_Callback(hObject, eventdata, handles);
@@ -809,13 +791,6 @@ try
                 Xx = fft(xw,FFTlength);
                 Sxxk = Xx.*conj(Xx)/U;          % Auto spectrum.
                 Sxx  = Sxx + Sxxk;
-%                 updateLoggingMsg(['Processing ',num2str(i),' segments'],handles);
-%                 plot(freqAxis,fftshift( 10*log10(Sxxk) ),'--','color',rand(1,3),'parent',handles.axes_monitoring);
-%                 xlabel('Frequency (Hz)','parent',handles.axes_monitoring);
-%                 ylabel('Magnitude (dB/Hz)','parent',handles.axes_monitoring);
-%                 xlim(handles.axes_monitoring,[freqAxis(1), freqAxis(end)]);
-%                 grid(handles.axes_monitoring,'on'); 
-%                 hold(handles.axes_monitoring,'on')
             end     
             len =length( rx_sig(xEnd(end)+1 : end) );
             zz = FFTlength-len;
@@ -839,18 +814,6 @@ try
     handles.freqResolution = freqResolution;
     guidata(hObject,handles);
 
-    %% For visualization
-%     normFreqAxis = freqAxis./(2*max(freqAxis));
-%     figure;  plot(normFreqAxis, Pxx_dB); grid off; 
-%     axis([min(normFreqAxis),max(normFreqAxis),min(Pxx_dB),max(Pxx_dB)]);
-%     xlabel('f/fs')
-    
-%     figure; hist(Pxx_dB, 35);
-%     figure('name','Intantaneous information'); 
-%     nn = 1200; xx = 1:nn;
-%     plot(xx,real(rx_sig(xx)),'r',xx,imag(rx_sig(xx))); grid on;
-%     xlabel('Samples')
-%     axis( [min(xx),max(xx),min(real(rx_sig(xx))),max(real(rx_sig(xx)))] ) ;
     % plot graph    
     if ~handles.opMode
         legend(handles.axes_monitoring,'off');
@@ -1056,8 +1019,6 @@ try
         if (firstMaxCntIdx-1) > (nBin-firstMaxCntIdx)
            % Right normal dist.
            distWidth = nBin-firstMaxCntIdx;
-%            idxVal = (firstMaxCntIdx-distWidth);
-
            idxVal = 2*firstMaxCntIdx-nBin;
            
            if idxVal < 1
@@ -1070,8 +1031,6 @@ try
         else
            % Left normal dist.
            distWidth = firstMaxCntIdx-1;
-%            idxVal = firstMaxCntIdx+distWidth;
-
            idxVal = 2*firstMaxCntIdx;
            
            if idxVal > nBin
@@ -1160,8 +1119,6 @@ try
     end
     
     %% SNR estimation
-%     minB = BWSampleIdx(1) - 3;  maxB = BWSampleIdx(end) + 3;
-%     BWSampleIdx = minB : maxB;
     noiseSampIedx                  = 1 : FFTlength;
     noiseSampIedx(BWSampleIdx) = [];
 
@@ -1203,8 +1160,6 @@ if ~handles.opMode
     plot(freqAxis(BWSampleIdx),smoothedPxx_dB(BWSampleIdx),'y.','parent',handles.axes_monitoring);
     plot(freqAxis(axisUpperIdx),thLine_dB(axisUpperIdx),'go','parent',handles.axes_monitoring);
     plot(freqAxis(axisLowerIdx),thLine_dB(axisLowerIdx),'k*','parent',handles.axes_monitoring);
-    % legend(handles.axes_monitoring, {'Smoothed PSD','Horizontal threshold', ...
-    %     'Vertical threshold','Samples larger than threshold'});
     updateLoggingMsg(['Estimated SNR : ', num2str(estimatedSNR_dB),' dB'],handles);
     updateLoggingMsg('Complete bandwidth estimation',handles); 
 end
@@ -1234,35 +1189,18 @@ function handles=pushbutton_coarseSNRestimation_Callback(hObject, eventdata, han
 updateLoggingMsg('While processing SNR estimation, please wait ...', handles);
 try
     signalSampleIdx                = handles.BWSampleIdx;
-%     minB = signalSampleIdx(1) - 3;
-%     maxB = signalSampleIdx(end) + 3;
-%     signalSampleIdx = minB : maxB;
     Pxx_dB                         = handles.Pxx_dB;
     FFTlength                      = handles.FFTlength;
     noiseSampIedx                  = 1 : FFTlength;
     noiseSampIedx(signalSampleIdx) = [];
     freqAxis                       = handles.freqAxis;
-%     featureSNR_dB                  = handles.featureSNR_dB;  
     %%% in case of intergration method
     % sigPower_dB = max( smoothedPxx_dB(etimatedSampleIdx) );
     % noisePower_dB = mean( smoothedPxx_dB(~etimatedSampleIdx));
     sigPower = mean( db2pow(Pxx_dB(signalSampleIdx)) );
     noisePower = mean( db2pow(Pxx_dB(noiseSampIedx)) );
     
-%     sigPower_dB = mean( Pxx_dB(signalSampleIdx) );
-    %noisePower_dB = mean( Pxx_dB(noiseSampIedx));
-
     estimatedSNR_dB    = (10.0)*log10(sigPower / noisePower);
-%     estimatedSNR_dB = sigPower_dB - noisePower_dB;
-
-    %% convert estimatedSNR to index
-%     dd = ( featureSNR_dB(1:end-1) + featureSNR_dB(2:end) ) /2;
-%     dd(end+1) = inf;
-%     for i= 1 : length(dd)
-%         if estimatedSNR_dB < dd(i)
-%              estimatedSNRIdx = i;   break;
-%   _      end
-%     end
     
 if ~handles.opMode;    % execute only manual mode
     %% update GUI states
@@ -1300,11 +1238,7 @@ updateLoggingMsg('While processing SNR adjustment, please wait ...',handles);
 try
     SNR_dB       = handles.SNR_dB;
     rx_sig       = handles.basic_rx_sig;
-%     sam_freq     = handles.sam_freq;
-%     signalFloor  = handles.signalFloor;
-%     noiseFloor   = handles.noiseFloor;
     signalPower  = handles.signalPower;
-%     noisePower   = hnadles.noisePower;
     
     viewEndIdx   = length(rx_sig); 
     viewStartIdx = 1 ;
@@ -1504,10 +1438,8 @@ try
     % Get new spectrum
     handles = pushbutton_viewSpectrum_Callback(hObject, eventdata, handles);      
     
-%     figure; plot(handles.freqAxis,handles.Pxx_dB);
     if ~handles.opMode       
         %% update PSD plot
-%         cla(handles.axes_monitoring,'reset');
         legend(handles.axes_monitoring,'off'); hold(handles.axes_monitoring,'on');
 
         plot(freqAxis,Pxx_dB,'r--','parent',handles.axes_monitoring); % previous spectrum
@@ -1519,8 +1451,7 @@ try
             ,Pxx_dB,'-r','parent',handles.axes_monitoring);
         plot(ones(length(Pxx_dB),1)*freqAxis(floor(end/2)+1) ...
             ,Pxx_dB,'-.g','parent',handles.axes_monitoring);
-        
-%         legend(handles.axes_monitoring,{'Spectrum','Offset frequency','Center frequency'});      
+         
         ylabel(handles.axes_monitoring,'Magnitude(dB)');
         xlabel(handles.axes_monitoring,'Frequency (Hz)');
         hold(handles.axes_monitoring,'off');
@@ -1653,10 +1584,9 @@ try
             m_a=mean(a_amplitude);                        % Eq. (2.3) in [1]
             a_n=a_amplitude/m_a;                          % Eq. (2.2) in [1]
             a_cn=a_n-1;                                   % Eq. (2.2) in [1]              
-    %         % 6. sigma_a
-    %         % Standard deviation of the normalized-centered instantaneous in the non-weak intervals of a signal segment
+            % 6. sigma_a
+            % Standard deviation of the normalized-centered instantaneous in the non-weak intervals of a signal segment
             sigma_a(frameCount)=sqrt(mean(a_cn.^2)-(mean(a_cn))^2);   % Eq. (4.1) at PP.118 in [1]
-%             figure; plot(a_amplitude)
             y = a_amplitude ;
             x = 1 : smallSamplesPerFrame;
             v =[x.' , ones(smallSamplesPerFrame,1)];
@@ -1670,9 +1600,6 @@ try
         end
         sigma_a = sigma_a(:);
         sigma_a = dataConditioning(sigma_a);  %figure; boxplot(sigma_a);
-    %       rmsDifference =dataConditioning(rmsDifference);figure; boxplot(sigma_a);
-       %% Classify between linear and non-linear modulation signal
-    %    sigma_a = 0.001;
         if  median(sigma_a) > sigmaAThreshold
             linearFlag = 'Linear'; 
             coarseModType = 'unKnown';
@@ -1708,9 +1635,7 @@ try
             if  strcmp(linearFlag,'nonLinear');                % divide signal with size of samplesPerFrame
                 % Obtain instantaneous frequency
                 phi_phase = angle(partialSig);  % between +- pi
-                
-%                 figure; plot(phi_phase,'--','Marker','.');
-                
+                                
                 iFreq = diff( unwrap( phi_phase ) );   
                 % noise reduction
                 iFreq = smooth(iFreq,25,'moving');  
@@ -1722,7 +1647,6 @@ try
                     iFreq(end-71:end)= iFreq(end); 
                 end
                  partialSig = iFreq;
-%                  figure; plot( iFreq);
             end            
             %partialSig = partialSig - mean(partialSig);    
            
@@ -1777,7 +1701,8 @@ try
         % Subtract continuous part from partOfNormalizedMag_dB
         detrendedPartialCM21_dB = (partialCM21_dB)-spectralTrend; % Detrend data
 %         figure; plot( partialCM21_dB);
-%         figure; plot(abs(diff(partialCM21_dB))); title('Diff. spectrum');
+%         figure; plot(abs(diff(partialCM21_dB))); title('Diff. spectrum');+
+
         % Search the global maximum peak within range        
         [symratePeak, symratePeakIdx] = max(detrendedPartialCM21_dB);
         if  strcmp(linearFlag,'nonLinear')
@@ -1860,8 +1785,6 @@ try
     handles.linearFlag             = linearFlag;    % linear digital signal classification bits    
     handles.coarseModType          = coarseModType;
     handles.adFlag                 = adFlag;
-%     handles.isFSK                  = isFSK;
-%     handles.symStartPoint          = symStartPoint;   % Added at 15.03.05 PM 3:47
     guidata(hObject,handles);
     
 % [1].	E. E. Azzouz and A. K. Nandi,  Automatic Modulation Recognition of 
@@ -1930,8 +1853,6 @@ try
             coarseNumberOfsymbols     = length(rx_sig) / coarseSamplesPerSymbol;
             coarseSamplesPerSymbol    = sam_freq / coarseSymbolRate;
            
-%             freqAxis = ( -FFTlength/2 : (FFTlength -1)/2 ) / FFTlength * sam_freq;
-    
            %% In the multi-rate processing, 
            % remind that the data rate of the signal is constant (unchanged)
             zeroIdx = FFTlength/2+1;
@@ -1964,7 +1885,6 @@ try
     handles.viewEndIdx                      = viewEndIdx;
     handles.viewStartIdx                    = viewStartIdx;    
     handles.previousDecimationFactor        = currentDecimationFactor;
-%     handles.freqAxis                        = freqAxis;
     
     guidata(hObject,handles);
     if ~handles.opMode
@@ -1999,7 +1919,6 @@ try
     coarseSymbolRate  = handles.coarseSymbolRate;
     Pxx               = handles.Pxx;
     
-%     coarseModType     = handles.coarseModType; 
     BWSampleIdx       = handles.BWSampleIdx;
     threshold_dB      = handles.BWthreshold;
     
@@ -2012,7 +1931,6 @@ try
     viewStartIdx      = handles.viewStartIdx;
     viewEndIdx        = handles.viewEndIdx;
     linearFlag        = handles.linearFlag;
-%     isFSK             = handles.isFSK;
     
     rx_sig = rx_sig(viewStartIdx : viewEndIdx );
     rx_sig = rx_sig(:);
@@ -2026,7 +1944,6 @@ try
         % 새로운 스펙트럼 계산이 필요       
         power = 1;
         numTones = 0;
-%         figure; plot(real(rx_sig(1:1024))); 
         while numTones <= 1
             if power > 4, break; end
             if power > 1     
@@ -2072,9 +1989,7 @@ try
                         for i = 1:numberOfSegments            
 %                             rx_sig(xStart(i):xEnd(i)) = smooth(rx_sig(xStart(i):xEnd(i)),3,'moving');
                             xp = rx_sig(xStart(i):xEnd(i)).^power;
-%                             if i == 1
-%                                 figure; plot(real(xp)); 
-%                             end
+
                             xw = xp.*window;                % Window the data
                             U = window'*window;             % compensates for the power of the window.
                             Xx = fft(xw,FFTlength);
@@ -2090,18 +2005,6 @@ try
                 
             end
             %% calculation BW
-
-            %tmp = num(Pxx>threshold);
-            %axisLowerIdx = tmp(1);
-            %axisUpperIdx = tmp(end);
-            %BWSampleIdx = axisLowerIdx : axisUpperIdx;
-            
-            %% dB scale
-%             Pxx_dB = pow2db(Pxx);
-%             logicIdx = Pxx_dB>threshold_dB;
-%             partialPxx = Pxx_dB(Pxx_dB>threshold_dB);
-%             partialPxx = partialPxx(:); 
-%             figure; plot(partialPxx);
                   
            %% linear scale
             logicIdx = Pxx>threshold_lin;
@@ -2111,17 +2014,9 @@ try
             % for plot
             num = 1: FFTlength;  
             BWSampleIdx = num(logicIdx);
-%              %% frequency domain smoothing
-%             smoothPartialPxx = smooth(partialPxx, 3,'moving');%length(partialPxx)/8,'moving');
-     
+            %% frequency domain smoothing
             continuousComponents = smooth(partialPxx, floor(length(BWSampleIdx)/4),'moving');%length(partialPxx)/8,'moving');
-%             figure; plot(partialPxx); hold on; plot(continuousComponents,'r');
             smoothPartialPxx = partialPxx - continuousComponents;
-
-            %% normalization
-%             smoothPartialPxx = partialPxx; %(partialPxx- min(partialPxx)) ./ ...
-%                 (max(partialPxx) - min(partialPxx));
-
 
             %% peak detection algorithm
             ratioBW2SR = coarseBandWidth / coarseSymbolRate;
@@ -2134,9 +2029,7 @@ try
             end
             
              %% Remove DC component
-%             offset = 7;
             offset = floor(200 / handles.freqResolution  * (power/2)); 
-%             offset = floor(  offset/2 );
             len = floor( length(partialPxx) / 2 ); range = len-offset : len+offset;
             smoothPartialPxx(range) = 0; % approximately -330Hz ~ + 330Hz
             
@@ -2192,10 +2085,10 @@ try
             isFM = 1;
         end
       
-%         if isFSK>0 % 심볼율 선 스펙트럼의 크기에 따라 FSK 분류 瑩嗤
-                 % 톤 스펙트럼 검출에 실패한 경우
-                 % from symbol rate est.
-%         else            
+        % if isFSK>0 % 심볼율 선 스펙트럼의 크기에 따라 FSK 분류
+	% 톤 스펙트럼 검출에 실패한 경우
+        % from symbol rate est.
+
             if isFM    
                 adFlag = 'Analog';
                 coarseModType = 'FM';                     
@@ -2208,7 +2101,6 @@ try
                 adFlag = 'Digital';
                 coarseModType = 'FSK';  
             end
-%         end
         if ~handles.opMode
             %% plot 
             cla(handles.axes_monitoring,'reset');
@@ -2328,7 +2220,6 @@ try
         v =[x.' , ones(samplesPerFrame,1)];
         % increasing order
         p = v\y;    % refer to iLinearFit.m 
-%             figure; plot(y(1:3000));
         % Same as 
         % [Q,R] = qr(v,0);
         % p2 = full(R\(Q'*y));    % Same as p = D*A\(D*y);
@@ -2393,10 +2284,6 @@ updateLoggingMsg('While processing recognition, please wait ...',handles);
 Lmod            = handles.Lmod;
 adFlag          = handles.adFlag;
 linearFlag      = handles.linearFlag;
-% coarseModType   = handles.coarseModType;
-% modulationOrder = handles.modulationOrder;
-% rmsDifference        = handles.rmsDifference;
-% cc20            = handles.cc20;
 cm40            = handles.cm40;
 sigma_a         = handles.sigma_a;
 isDehoppingSig  = handles.isDehoppingSig;
