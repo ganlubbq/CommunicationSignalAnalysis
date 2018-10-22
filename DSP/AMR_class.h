@@ -5,7 +5,7 @@
 // Object-oriented programming
 //
 // Notice
-//  - qsort is replaced by hepasort deu to the error
+//  - qsort is replaced by heapsort deu to the error
 //  - 
 // 15.06.25
 
@@ -19,7 +19,7 @@ public:
 public:   // memeber variable
 	FILE *fa;
 
-	int	AMR_decimationTable[8];
+	int AMR_decimationTable[8];
 	int AMR_DEBUG_numseg;			 //for AMR_DEBUGging
 	int AMR_ADCsamplingFrequency;	 //140MHz
 	int AMR_Decimation;
@@ -46,7 +46,7 @@ public:   // memeber variable
 
 	unsigned int AMR_binCount[AMR_MAX_NUMBINS+2];	 // for histogram
 	float		 AMR_binCenter[AMR_MAX_NUMBINS+2];	 // for histogram	
-	float		 AMR_bins[AMR_MAX_NUMBINS+2];	// ±¸¿ª ºĞÇÒ ¹üÀ§, numAMR_binsÀÇ Áß½É°ª
+	float		 AMR_bins[AMR_MAX_NUMBINS+2];	// êµ¬ì—­ ë¶„í•  ë²”ìœ„, numAMR_binsì˜ ì¤‘ì‹¬ê°’
 
 	unsigned int			AMR_numPeaks;						    	// for mode operation
 
@@ -143,7 +143,7 @@ public:   // memeber variable
 
 public:
 	unsigned int AMR_numTOA;
-	 ////struct AMR_struct { ... } ±¸Á¶Ã¼¸¦ amrObj ÀÌ¶ó´Â µ¥ÀÌÅÍÇüÀ¸·Î Á¤ÀÇÇÑ´Ù.
+	 ////struct AMR_struct { ... } êµ¬ì¡°ì²´ë¥¼ amrObj ì´ë¼ëŠ” ë°ì´í„°í˜•ìœ¼ë¡œ ì •ì˜í•œë‹¤.
 	 ////http://www.tipssoft.com/bulletin/board.php?bo_table=FAQ&wr_id=968
 
 	unsigned int IQbeginIdx[AMR_MAX_NUM_SEGMENT];
