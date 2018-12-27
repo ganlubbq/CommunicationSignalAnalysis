@@ -1216,6 +1216,8 @@ if ~handles.opMode;    % execute only manual mode
     ,Pxx_dB(signalSampleIdx),'g.','parent',handles.axes_monitoring);
     plot(freqAxis(noiseSampIedx) ...
     ,Pxx_dB(noiseSampIedx),'rs','parent',handles.axes_monitoring);
+    xlim(handles.axes_monitoring, [min(freqAxis), max(freqAxis)]);  
+    ylim(handles.axes_monitoring,[min(Pxx_dB), max(Pxx_dB)]);
     legend(handles.axes_monitoring,{'Spectrum','Signal samples','Noise samples'});
     ylabel(handles.axes_monitoring,'Magnitude(dB)');
     hold(handles.axes_monitoring,'off');
