@@ -22,17 +22,6 @@ function varargout = AMRtestbed(varargin)
 
 % Last Modified by GUIDE v2.5 22-Dec-2018 21:40:41
 
-%% Date          History
-% 150112        C ±¸ÇöÀ» À§ÇØ awgn ÇÔ¼ö ÁÖ¼®Ã³¸®
-% 150114        ÀÔ·Âµ¥ÀÌÅÍ¸¦ matÆÄÀÏ·Î ÀÚµ¿ ÀúÀåÇÏ°ÔÇÔ
-%               ÀÔ·Âµ¥ÀÌÅÍ ±æÀÌÁ¦ÇÑ
-%               ÀÎµ¦½º°¡ ¹è¿­ÀÇ Å©±â¸¦ ³Ñ´ÂÁö Ç×»ó È®ÀÎÇÒ °Í
-% 150115        FFT ±æÀÌ ÀÓÀÇ·Î Á¶Àı              
-% 150121        line 2391 ¿¡ Á¤±ÔÈ­µÈ ÂüÁ¶µ¥ÀÌÅÍ¸¦ matÆÄÀÏ·Î ÀúÀåÇÏ´Â ÄÚµå Ãß°¡
-%               line 2909 
-%               line 641  ÀÔ·Â IQ µ¥ÀÌÅÍ ÀúÀå ÄÚµå
-% 150330        ÁÖÆÄ¼ö Åæ°£°İ ÃßÁ¤ ÀçÇ¥º»È­ ´Ü°è ÀÌÈÄ·Î º¯°æ
-
 %% List of callback function
 % handles = pushbutton_inputSignal_Callback(hObject, eventdata, handles);    
 % pushbutton_viewWaveform_Callback(hObject, eventdata, handles)
@@ -80,9 +69,7 @@ handles.sam_period         = 1 / handles.sam_freq;
 handles.rF                 = 0.35;    % roll-off factor
 handles.FFTlength          = 2^13;    % 8192, The length of periodgram = FFT length, for Bandwidth
 handles.samplesPerSegment  = 2^14;
-% handles.SymboRateSamplesPerSegment = 65536; --> FFTlength, 15.06.22
 
-% handles.featureSNR_dB      = 10 :5: 30 ; %10:20; % --> 140106
 handles.SNR_dB             = 15;
 handles.limitation         = 120;          % Unused
 handles.displayRange       = 1:1500;
@@ -487,10 +474,10 @@ isDehoppingSig = 0;
 cd(pwd);
 
 %% Note
-%  ÁÖ ½ºÆåÆ®·³¿Ü¿¡ ºÎ¼öÀûÀÎ ½ºÆåÆ®·³ÀÌ »ı±ä °æ¿ì IQ µ¥ÀÌÅÍ ÆÄÇüÀ» »ìÆìº¸°í 
-%  ÆÄÇüÀÌ ±Ş°İÇÏ°Ô º¯ÇÏ´Â ºÎºĞ¿¡¼­ ÆÄÇüÀÇ À§ ¾Æ·¡°¡ ¹Ù²î¾ú´ÂÁö »ìÆìº¼ °Í.  
-%  ¿øÀÎ : overflow
-%  ÇØ°á : ½ÅÈ£ Àü·ÂÀ» ³·Ãá´Ù. 
+%  ì£¼ ìŠ¤í™íŠ¸ëŸ¼ì™¸ì— ë¶€ìˆ˜ì ì¸ ìŠ¤í™íŠ¸ëŸ¼ì´ ìƒê¸´ ê²½ìš° IQ ë°ì´í„° íŒŒí˜•ì„ ì‚´í´ë³´ê³  
+%  íŒŒí˜•ì´ ê¸‰ê²©í•˜ê²Œ ë³€í•˜ëŠ” ë¶€ë¶„ì—ì„œ íŒŒí˜•ì˜ ìœ„ ì•„ë˜ê°€ ë°”ë€Œì—ˆëŠ”ì§€ ì‚´í´ë³¼ ê²ƒ.  
+%  ì›ì¸ : overflow
+%  í•´ê²° : ì‹ í˜¸ ì „ë ¥ì„ ë‚®ì¶˜ë‹¤. 
 
 
 if isfield(handles,'sigName')
@@ -1142,7 +1129,7 @@ set(hObject,'BackgroundColor',[222 235 250]/255);
 
 function handles=pushbutton_coarseBandWidthEstimation_Callback(hObject, eventdata, handles)
 %
-% ÁÖÀÇ : ÀÓ°èÄ¡º¸´Ù Å« ½ºÆåÆ®·³¿¡¼­ ½ÅÈ£¼ººĞ¿ÜÀÇ °ÍÀÌ Æ÷ÇÔµÉ¶§ ¿À·ù°¡ ³­´Ù.
+% ì£¼ì˜ : ì„ê³„ì¹˜ë³´ë‹¤ í° ìŠ¤í™íŠ¸ëŸ¼ì—ì„œ ì‹ í˜¸ì„±ë¶„ì™¸ì˜ ê²ƒì´ í¬í•¨ë ë•Œ ì˜¤ë¥˜ê°€ ë‚œë‹¤.
 %
 updateLoggingMsg('While processing bandwidth estimation, please wait ...',handles);  
 try
@@ -1253,7 +1240,7 @@ try
     
 %     numIdx = 1 : numOfBins;
 %     th1 = 80/100*MaxMinusMin;% + yMin;
-%     if noiseFloor > th1 % ½ÅÈ£ ´ë¿ªÆø similar to fs/2
+%     if noiseFloor > th1 % ì‹ í˜¸ ëŒ€ì—­í­ similar to fs/2
 %         signalFloor = noiseFloor;
 %         levelB2NoiseNSig = signalFloor - offset;
 %         
@@ -1402,8 +1389,8 @@ try
     freqIdx = num(idx);
     binMinSize = 1400 / freqResolution;
     [~,yMaxIdx] = max(smoothedPxx(idx));
-    % ´ë¿ªÆø³» ÁÖÆÄ¼ö ºó ÃÖ´ë »çÀÌ °£°İ 500Hz/33Hz  = 151      
-    % ¿øÄ¡¾ÊÀº  ½ºÆåÆ®·³ ¼ººĞÀÌ ´Ù¼ö¶ó¸é Áß°£°ªºÎÅÍ ¹ÛÀ¸·Î ³ª°¡¸é¼­ ¸ğµÎ Á¦°ÅÇÑ´Ù.
+    % ëŒ€ì—­í­ë‚´ ì£¼íŒŒìˆ˜ ë¹ˆ ìµœëŒ€ ì‚¬ì´ ê°„ê²© 500Hz/33Hz  = 151      
+    % ì›ì¹˜ì•Šì€  ìŠ¤í™íŠ¸ëŸ¼ ì„±ë¶„ì´ ë‹¤ìˆ˜ë¼ë©´ ì¤‘ê°„ê°’ë¶€í„° ë°–ìœ¼ë¡œ ë‚˜ê°€ë©´ì„œ ëª¨ë‘ ì œê±°í•œë‹¤.
     
     % toward left edge
     partIdx = freqIdx(1:yMaxIdx); 
@@ -1951,7 +1938,7 @@ end
 function handles = pushbutton_lowPassFilterling_Callback(hObject, ~, handles)
 updateLoggingMsg('While processing lowpass filtering, please wait ...',handles);
 try   
-    % ¹İµå½Ã ½ÅÈ£ÀÇ ÁÖÆÄ¼ö ´ë¿ª¸¸ Ãß°¡ µÇ¾î¾ß ÇÑ´Ù.
+    % ë°˜ë“œì‹œ ì‹ í˜¸ì˜ ì£¼íŒŒìˆ˜ ëŒ€ì—­ë§Œ ì¶”ê°€ ë˜ì–´ì•¼ í•œë‹¤.
     sam_freq                = handles.sam_freq;
     BWSampleIdx             = handles.BWSampleIdx;
     freqAxis                = handles.freqAxis;     
@@ -2052,7 +2039,7 @@ try
     
     smallSamplesPerFrame = 4000;
     if isDehoppingSig 
-        % ¿ªµµ¾à ½ÅÈ£´Â FMÀ¸·Î °¡Á¤
+        % ì—­ë„ì•½ ì‹ í˜¸ëŠ” FMìœ¼ë¡œ ê°€ì •
         coarseModType = 'FM';                     
         coarseSamplesPerSymbol  = 0;
         coarseNumberOfsymbols   = 0;
@@ -2405,7 +2392,7 @@ try
                     downsamplingRatio = downsamplingRatio + 1;                    
                 end
                 %constant = floor( coarseSamplesPerSymbol / spsUpperBound	 );
-                % ÇöÀçÀÇ µ¥½Ã¸ŞÀÌ¼ÇÀ²À» constantº¸´Ù Å« 2ÀÇ ¹è¼ö¸¸Å­ ´Ã·Á¾ß ÇÑ´Ù.
+                % í˜„ì¬ì˜ ë°ì‹œë©”ì´ì…˜ìœ¨ì„ constantë³´ë‹¤ í° 2ì˜ ë°°ìˆ˜ë§Œí¼ ëŠ˜ë ¤ì•¼ í•œë‹¤.
                 %downsamplingRatio = 2^power; % 2^nextpow2(constant);       
                 p = 1;  q=downsamplingRatio;       
                 % Decrease sampling rate by integer factor
@@ -2513,8 +2500,8 @@ try
     
     if strcmp(linearFlag,'nonLinear')   
       
-        % ¿É¼Â ÃßÁ¤ÇÏ±â Àü¿¡ Pxx_dB¶ó¼­ Á¦´ë·Î ¾ÈµÈ´Ù.
-        % »õ·Î¿î ½ºÆåÆ®·³ °è»êÀÌ ÇÊ¿ä       
+        % ì˜µì…‹ ì¶”ì •í•˜ê¸° ì „ì— Pxx_dBë¼ì„œ ì œëŒ€ë¡œ ì•ˆëœë‹¤.
+        % ìƒˆë¡œìš´ ìŠ¤í™íŠ¸ëŸ¼ ê³„ì‚°ì´ í•„ìš”       
         power = 1;
         numTones = 0;
 %         figure; plot(real(rx_sig(1:1024))); 
@@ -2675,10 +2662,10 @@ try
     	
     
 %     		// General information
-% 			// 1) ¼±Çüº¯Á¶ ½ÅÈ£ÀÇ ´ë¿ªÆøÀº ½Éº¼À²ÀÇ 2.5¹è¸¦ ³ÑÁö ¾Ê´Â´Ù.
-% 			// 2) ºñ¼±Çüº¯Á¶ ½ÅÈ£ÀÎ FSKÀÇ ´ë¿ªÆøÀº ½Éº¼À²ÀÇ 8.5¹è¸¦ ³ÑÁö ¾Ê´Â´Ù.
-% 			//    ex) ½Éº¼À²°ú ´ë¿ªÆøÀÇ ºñ°¡ °¡Àå Å« ÇÁ·ÎÅäÄİÀº POCSAGÀ¸·Î 6.8¹è ÀÌ´Ù.
-% 			// µû¶ó¼­ ½Éº¼À²°ú ´ë¿ªÆøÀÇ ºñ¸¦ °è»êÇÏ¸é FSK¿Í FMÀ» ±¸ºĞÇÒ ¼ö ÀÖ´Ù.     
+% 			// 1) ì„ í˜•ë³€ì¡° ì‹ í˜¸ì˜ ëŒ€ì—­í­ì€ ì‹¬ë³¼ìœ¨ì˜ 2.5ë°°ë¥¼ ë„˜ì§€ ì•ŠëŠ”ë‹¤.
+% 			// 2) ë¹„ì„ í˜•ë³€ì¡° ì‹ í˜¸ì¸ FSKì˜ ëŒ€ì—­í­ì€ ì‹¬ë³¼ìœ¨ì˜ 8.5ë°°ë¥¼ ë„˜ì§€ ì•ŠëŠ”ë‹¤.
+% 			//    ex) ì‹¬ë³¼ìœ¨ê³¼ ëŒ€ì—­í­ì˜ ë¹„ê°€ ê°€ì¥ í° í”„ë¡œí† ì½œì€ POCSAGìœ¼ë¡œ 6.8ë°° ì´ë‹¤.
+% 			// ë”°ë¼ì„œ ì‹¬ë³¼ìœ¨ê³¼ ëŒ€ì—­í­ì˜ ë¹„ë¥¼ ê³„ì‚°í•˜ë©´ FSKì™€ FMì„ êµ¬ë¶„í•  ìˆ˜ ìˆë‹¤.     
                 
         isFM = 0;
         % Check ratio bandwidth to symbol rate
@@ -2708,8 +2695,8 @@ try
             isFM = 1;
         end
       
-%         if isFSK>0 % ½Éº¼À² ¼± ½ºÆåÆ®·³ÀÇ Å©±â¿¡ µû¶ó FSK ºĞ·ù ‰çÁö¸¸
-                 % Åæ ½ºÆåÆ®·³ °ËÃâ¿¡ ½ÇÆĞÇÑ °æ¿ì
+%         if isFSK>0 % ì‹¬ë³¼ìœ¨ ì„  ìŠ¤í™íŠ¸ëŸ¼ì˜ í¬ê¸°ì— ë”°ë¼ FSK ë¶„ë¥˜ Â‰ï¦®å—¤
+                 % í†¤ ìŠ¤í™íŠ¸ëŸ¼ ê²€ì¶œì— ì‹¤íŒ¨í•œ ê²½ìš°
                  % from symbol rate est.
 %         else            
             if isFM    
@@ -3423,8 +3410,8 @@ function handles=plotRefDataNfeatureSet(handles)
 
 %     case 'E4438C'
 % %                   load refData_FromGenerator_150131.mat
-% %                   load refData_FromGenerator_150203.mat % 2ASK Á¦°Å
-%           load refData_FromGenerator_150407.mat % cc20 Ãß°¡, gammax_max, circular statistics Á¦°Å
+% %                   load refData_FromGenerator_150203.mat % 2ASK ì œê±°
+%           load refData_FromGenerator_150407.mat % cc20 ì¶”ê°€, gammax_max, circular statistics ì œê±°
 %     otherwise
 % end
         
